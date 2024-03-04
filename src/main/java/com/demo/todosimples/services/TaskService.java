@@ -1,5 +1,6 @@
 package com.demo.todosimples.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +27,14 @@ public class TaskService {
                 () -> new RuntimeException("Task not found! Id: " + id + ", Tipo: " + Task.class.getName()));
     }
 
+    public List<Task> findAllByUserId(Long userId) {
+        List<Task> tasks = this.taskRepository.findByUser_id(userId);
+        return tasks;
+    }
+
     @Transactional
     public Task create(Task obj) {
-        User user = this.userService.findById(obj.getId());
+        User user = this.userService.findById(obj.getUser().getId());
         obj.setId(null);
         obj.setUser(user);
         obj = this.taskRepository.save(obj);
