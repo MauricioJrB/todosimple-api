@@ -8,6 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.demo.todosimples.models.User;
 import com.demo.todosimples.repositories.UserRepository;
+import com.demo.todosimples.services.exceptions.DataBindingViolationException;
+import com.demo.todosimples.services.exceptions.ObjectNotFoundException;
 
 @Service
 public class UserService {
@@ -18,7 +20,7 @@ public class UserService {
     public User findById(Long id) {
         Optional<User> user = this.userRepository.findById(id);
         return user.orElseThrow(
-                () -> new RuntimeException("User not found! Id: " + id + ", Tipo: " + User.class.getName()));
+                () -> new ObjectNotFoundException("User not found! Id: " + id + ", Tipo: " + User.class.getName()));
     }
 
     @Transactional
@@ -40,7 +42,7 @@ public class UserService {
         try {
             this.userRepository.deleteById(id);
         } catch (Exception e) {
-            throw new RuntimeException("It is not possible to delete because there are related entities!");
+            throw new DataBindingViolationException("It is not possible to delete because there are related entities!");
         }
     }
 }
